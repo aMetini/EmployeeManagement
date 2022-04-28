@@ -3,9 +3,11 @@ import { useContext, useState, useEffect } from "react";
 import { EmployeeContext } from "../context/EmployeeContext";
 import AddForm from "./AddForm";
 import Employee from "./Employee";
+import Pagination from "./Pagination";
 
 const EmployeeList = () => {
-  const { employees } = useContext(EmployeeContext);
+  //const { employees } = useContext(EmployeeContext);
+  const { sortedEmployees } = useContext(EmployeeContext);
 
   const [showAlert, setShowAlert] = useState(false);
 
@@ -17,6 +19,9 @@ const EmployeeList = () => {
   const handleClose = () => setShow(false);
   const handleShowAlert = () => setShowAlert(true);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [employeesPerPage] = useState(2);
+
   // This hook will automatically close our modal.  Add employees reference to fire when employees
   // changes.
   useEffect(() => {
@@ -25,7 +30,12 @@ const EmployeeList = () => {
     return() => {
         handleShowAlert();
     }
-  }, [employees])
+  }, [sortedEmployees])
+
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+  const currentEmployees = sortedEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+  const totalPages = Math.ceil(sortedEmployees.length / employeesPerPage);
 
   return (
     <>
@@ -65,13 +75,16 @@ const EmployeeList = () => {
           </tr>
         </thead>
         <tbody>
-          {employees.sort((a,b)=>(a.name < b.name ? -1 : 1)).map((employee) => (
+          {/* {employees.sort((a,b)=>(a.name < b.name ? -1 : 1)).map((employee) => ( */}
+          {currentEmployees.map((employee) => (
             <tr key={employee.id}>
               <Employee employee={employee} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination pages = {totalPages} setCurrentPage={setCurrentPage} />
 
 {/* We add the variable show set to our show(state) */}
       <Modal show={show} onHide={handleClose}>

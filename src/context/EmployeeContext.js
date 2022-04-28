@@ -13,6 +13,8 @@ const EmployeeContextProvider  = (props) => {
         {id:uuidv4(), name: 'Martin Blank', email: 'martinblank@mail.com', address: 'Via Monte Bianco 34, Turin, Italy', phone: '(480) 631-2097'}
 ])
 
+const sortedEmployees = employees.sort((a,b)=>(a.name < b.name ? -1 : 1));
+
 // addEmployee function takes 4 properties and returns a setEmployees (state) with 5 properties
 const addEmployee = (name, email, address, phone) => {
     // setEmployees is an object so must enclose properties in curly brackets
@@ -30,7 +32,8 @@ const updateEmployee = (id, updatedEmployee) => {
 
 // In the EmployeeContext.Provider we provide the values of (state) employees and addEmployee
     return (
-        <EmployeeContext.Provider value={{employees, addEmployee, deleteEmployee, updateEmployee}}>
+        // <EmployeeContext.Provider value={{employees, addEmployee, deleteEmployee, updateEmployee}}>
+        <EmployeeContext.Provider value={{sortedEmployees, addEmployee, deleteEmployee, updateEmployee}}>
             {props.children}
         </EmployeeContext.Provider>
     )
